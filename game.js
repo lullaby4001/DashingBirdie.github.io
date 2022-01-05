@@ -54,10 +54,14 @@ function play() {
     var fly = new Audio();
     var scor = new Audio();
     var hit = new Audio();
+    var bgm = new Audio();
 
     fly.src = "sounds/fly.mp3";
     scor.src = "sounds/score.mp3";
     hit.src = "sounds/hit.wav";
+    bgm.src = "sounds/bgm.mp3";
+
+    bgm.loop = true;// 設定循環撥放
 
     // 圖片切割設定
     let cols = 1;
@@ -106,6 +110,7 @@ function play() {
     function draw() {
 
         ctx.drawImage(bg, 0, 0);
+        bgm.play();
 
         // 繪製水管
         for (var i = 0; i < pipe.length; i++) {
@@ -203,6 +208,7 @@ function play() {
         // 遊戲結束
         else if (alive == false) {
             ctx.drawImage(fg, 0, cvs.height - fg.height);
+            bgm.pause();
 
             startGame.style.display = "none";
             startGame.innerHTML = "<p>RETRY</p>";

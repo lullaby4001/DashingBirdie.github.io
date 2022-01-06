@@ -21,7 +21,7 @@ function play() {
     var bY = 150;
 
     //  重力
-    var gravity = 1.6;
+    var gravity = 1.0;
 
     var alive = true;
 
@@ -99,7 +99,7 @@ function play() {
     function moveUp(e){
         var x = e.keyCode
         if(x == 38){
-            bY -= 40;
+            bY -= 35;
             fly.play();
         }
     }
@@ -117,7 +117,7 @@ function play() {
             ctx.drawImage(pipeNorth, pipe[i].x, pipe[i].y);
             ctx.drawImage(pipeSouth, pipe[i].x, pipe[i].y + constant);
 
-            pipe[i].x = pipe[i].x - 2;
+            pipe[i].x = pipe[i].x - 1;
 
             if (pipe[i].x == 480) {
                 pipe.push({
@@ -149,7 +149,7 @@ function play() {
 
             ctx.drawImage(life, lifes[i].x, lifes[i].y);
 
-            lifes[i].x = lifes[i].x - 2;
+            lifes[i].x = lifes[i].x - 1;
 
             if (lifes[i].x == 590) {
                 lifes.push({

@@ -10,7 +10,7 @@ function play() {
     var cvs = document.getElementById("canvas");
     var ctx = cvs.getContext("2d");
 
-    // 基礎變數
+    // 基礎變數設定
     var gap = 100; // 水管之間的通道長度
     var constant;
     var attack;
@@ -21,11 +21,9 @@ function play() {
     var bY = 150;
 
     //  重力
-    var gravity = 1.0;
+    var gravity = 1.6;
 
     var alive = true;
-
-    // var score = 0;
 
     const score= {
         best : parseInt(localStorage.getItem("best")) || 0,
@@ -101,7 +99,7 @@ function play() {
     function moveUp(e){
         var x = e.keyCode
         if(x == 38){
-            bY -= 35;
+            bY -= 40;
             fly.play();
         }
     }
@@ -119,7 +117,7 @@ function play() {
             ctx.drawImage(pipeNorth, pipe[i].x, pipe[i].y);
             ctx.drawImage(pipeSouth, pipe[i].x, pipe[i].y + constant);
 
-            pipe[i].x--;
+            pipe[i].x = pipe[i].x - 2;
 
             if (pipe[i].x == 480) {
                 pipe.push({
@@ -151,7 +149,7 @@ function play() {
 
             ctx.drawImage(life, lifes[i].x, lifes[i].y);
 
-            lifes[i].x--;
+            lifes[i].x = lifes[i].x - 2;
 
             if (lifes[i].x == 590) {
                 lifes.push({
@@ -186,7 +184,8 @@ function play() {
              currentFrame = currentFrame % totalFrames;
              srcY = currentFrame * spriteHeight;
 
-             ctx.drawImage(birdsprite, srcX, srcY, spriteWidth, spriteHeight, bX, bY, spriteWidth, spriteHeight);
+             ctx.drawImage(birdsprite, srcX, srcY, 
+                spriteWidth, spriteHeight, bX, bY, spriteWidth, spriteHeight);
 
              frameDrawn++;
              if(frameDrawn >= 10){

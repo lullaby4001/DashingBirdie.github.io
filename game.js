@@ -21,7 +21,7 @@ function play() {
     var bY = 150;
 
     //  重力
-    var gravity = 1.2;
+    var gravity = 1.0;
 
     var alive = true;
 

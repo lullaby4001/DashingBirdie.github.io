@@ -33,6 +33,7 @@ function play() {
     // 載入圖片
     var bird = new Image();
     var birdsprite = new Image();
+    var boom = new Image();
     var bg = new Image();
     var fg = new Image();
     var pipeNorth = new Image();
@@ -41,6 +42,7 @@ function play() {
 
     bird.src = "images/bird.png";
     birdsprite.src = "images/birdsprite.png";
+    boom.src = "images/boom.png";
     bg.src = "images/bg.png";
     fg.src = "images/fg.png";
     pipeNorth.src = "images/pipeNorth.png";
@@ -61,11 +63,17 @@ function play() {
 
     bgm.loop = true;// 設定循環撥放
 
-    // 圖片切割設定
-    let cols = 1;
-    let rows = 4;
-    let spriteWidth = 36 / cols; // 圖片寬度除格數
-    let spriteHeight = 104 / rows; // 圖片高度除格數
+    // 拍動翅膀圖片切割設定
+    let bcols = 1;
+    let brows = 4;
+    let bspriteWidth = 36 / bcols; // 圖片寬度除格數
+    let bspriteHeight = 104 / brows; // 圖片高度除格數
+
+    // 墜毀圖片切割設定
+    let dcols = 1;
+    let drows = 6;
+    let dspriteWidth = 127 / dcols; // 圖片寬度除格數
+    let dspriteHeight = 762 / drows; // 圖片高度除格數
       
 
     // 圖片切割的起始點
@@ -73,7 +81,8 @@ function play() {
     let srcY =0;
 
     // 控制速度用的
-    let totalFrames = 4;
+    let btotalFrames = 4;
+    let dtotalFrames = 6;
     let currentFrame = 0;
     let frameDrawn =0;
 
@@ -134,6 +143,8 @@ function play() {
                     || bY + bird.height >= cvs.height - fg.height 
                     || bY <= 0) {
                 alive = false;
+				frameDrawn = 0;
+				currentFrame = 0;
             }
 
             if (pipe[i].x == 5) {
@@ -174,6 +185,8 @@ function play() {
 
             if (Hp == 0) {
                 alive = false;
+				currentFrame = 0;
+				frameDrawn = 0;
             }
         }
 
@@ -181,17 +194,17 @@ function play() {
             ctx.drawImage(fg, 0, cvs.height - fg.height);
 
             // 小鳥拍動翅膀
-             currentFrame = currentFrame % totalFrames;
-             srcY = currentFrame * spriteHeight;
+            currentFrame = currentFrame % btotalFrames;
+            srcY = currentFrame * bspriteHeight;
 
-             ctx.drawImage(birdsprite, srcX, srcY, 
-                spriteWidth, spriteHeight, bX, bY, spriteWidth, spriteHeight);
+            ctx.drawImage(birdsprite, srcX, srcY, 
+                bspriteWidth, bspriteHeight, bX, bY, bspriteWidth, bspriteHeight);
 
-             frameDrawn++;
-             if(frameDrawn >= 10){
-                 currentFrame++;
-                 frameDrawn = 0;
-             }
+            frameDrawn++;
+            if(frameDrawn >= 10){
+                currentFrame++;
+                frameDrawn = 0;
+            }
 
             bY += gravity;
 
@@ -208,6 +221,8 @@ function play() {
         else if (alive == false) {
             ctx.drawImage(fg, 0, cvs.height - fg.height);
             bgm.pause();
+            hit.play();
+            frameDrawn = 0;
 
             startGame.style.display = "none";
             startGame.innerHTML = "<p>RETRY</p>";
@@ -220,8 +235,8 @@ function play() {
             document.getElementById("score").classList.remove("display-none")
             document.getElementById("bestScore").classList.remove("display-none")
             
-            hit.play()
-            frameDrawn = 0;
+			srcY = 0;
+            requestAnimationFrame(die);
         }
     }
     
@@ -234,6 +249,39 @@ function play() {
         localStorage.setItem("best", score.best);
     }
 
+	function die() {
+		if(currentFrame <= dtotalFrames){
+			ctx.drawImage(bg, 0, 0);
+
+            // 繪製水管
+            for (var i = 0; i < pipe.length; i++) {
+                constant = pipeNorth.height + gap;
+                ctx.drawImage(pipeNorth, pipe[i].x, pipe[i].y);
+                ctx.drawImage(pipeSouth, pipe[i].x, pipe[i].y + constant);
+            }
+		    // 繪製生命值
+            for (var i = 0; i < lifes.length; i++) {
+                ctx.drawImage(life, lifes[i].x, lifes[i].y);
+            }
+
+            ctx.drawImage(fg, 0, cvs.height - fg.height);
+            
+			// 小鳥墜毀
+			srcY = currentFrame * dspriteWidth;
+			// console.log(srcX);
+
+			ctx.drawImage(boom, srcX, srcY,
+				dspriteWidth, dspriteHeight, bX*1/2, bY-dspriteWidth*1/2, dspriteWidth, dspriteHeight);
+
+			frameDrawn++;
+			if(frameDrawn >= 10){
+				currentFrame++;
+				frameDrawn = 0;
+			}
+			requestAnimationFrame(die);
+		}
+        
+	}
     draw();
 }
 
